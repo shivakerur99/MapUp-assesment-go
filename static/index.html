@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        form {
+            max-width: 800px;
+            margin: 40px auto; 
+            background-color: #fff;
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); 
+        }
+
+        label {
+            display: block;
+            margin-bottom: 12px; 
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px; 
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        button {
+            padding: 14px 20px; 
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 12px; 
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background-color: #eee;
+            padding: 20px; 
+            border-radius: 8px;
+        }
+
+        h3 {
+            color: #333;
+            margin-top: 30px; 
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="footer">
+        <p>Designed by Shivanand Kerur</p>
+        <p>Portfolio: <a href="https://portfolio-taupe-psi-80.vercel.app/" target="_blank">check it out</a></p>
+    </div>
+    <form id="sortForm">
+        <label for="arrayInput">Enter Arrays:</label>
+        <textarea id="arrayInput" rows="5" cols="50" placeholder="[[3,2,1], [6,4,5], [9, 8, 7]] enter array with unsorted subarray in this format "></textarea>
+        <br>
+
+        <button type="button" onclick="sortSequential()">Sequential Sort</button>
+        <button type="button" onclick="sortConcurrent()">Concurrent Sort</button>
+    </form>
+    <div class="footer">
+        <h3>Sorted Arrays:</h3>
+        <pre id="sortedResult"></pre>
+    </div>
+    <script>
+        function sortSequential() {
+            const inputArray = JSON.parse(document.getElementById('arrayInput').value);
+            sortForm.style.display = 'none';
+            sortArray('/process-single', inputArray);
+        }
+    
+        function sortConcurrent() {
+            const inputArray = JSON.parse(document.getElementById('arrayInput').value);
+            sortForm.style.display = 'none';
+            sortArray('/process-concurrent', inputArray);
+        }
+    
+        function sortArray(endpoint, inputArray) {
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ to_sort: inputArray }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const sortedResultElement = document.getElementById('sortedResult');
+                sortedResultElement.innerHTML = `
+                    <h3>Sorted Arrays:</h3>
+                    <pre>sorted_arrays:${JSON.stringify(data.sorted_arrays, null, 2)}</pre>
+                    <p>Time_ns: ${data.time_ns}</p>
+                `;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
+
